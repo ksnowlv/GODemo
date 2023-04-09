@@ -22,6 +22,21 @@ func main() {
 	fmt.Printf("e + f:%.2f,e - f:%.2f\n", sum, dif)
 
 	g := 10
-	var j float64 = float64(g)
+	j := float64(g)
 	fmt.Println("j:", j)
+
+	c1 := complex(1, 3)
+	c2 := 1 + 2i
+	res1 := c1 + c2
+	res2 := c1 - c2
+
+	fmt.Println("c1 + c2:", res1, "c1 - c2:", res2)
+
+	firstName := "wei"
+	lastName := "lv"
+
+	fullName := firstName + lastName
+
+	fmt.Println("fullName:", fullName)
+
 }
