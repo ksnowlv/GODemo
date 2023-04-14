@@ -26,6 +26,7 @@ func (r Rectangle) getArea() int {
 	return r.width * r.height
 }
 
+// 使用指针接收实现
 func (r *Rectangle) getCircumference() int {
 	return 2 * (r.width + r.height)
 }
@@ -34,6 +35,7 @@ func (c Circle) getArea() int {
 	return int(math.Pi * math.Pow(c.radius, 2))
 }
 
+// 使用指针接收实现
 func (c *Circle) getCircumference() int {
 	return int(2 * math.Pi * c.radius)
 }
