@@ -60,7 +60,7 @@ func channelWithClose(channel chan int) {
 	for i := 0; i < LOOPNUM; i++ {
 		channel <- i
 	}
-
+	//如不关闭，主协程中，会死循环。
 	close(channel)
 }
 
