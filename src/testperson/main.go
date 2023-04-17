@@ -12,7 +12,7 @@ func main() {
 	Println("person test")
 	person.ShowLog()
 
-	p := person.Person{"ksnowlv", "152", 30}
+	p := person.Person{Name: "ksnowlv", Phone: "152", Age: 30}
 
 	p.ShowInfo()
 }
