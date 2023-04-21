@@ -11,9 +11,11 @@ func main() {
 
 	r := gin.Default()
 	//config router
-	r.GET("/", func(ctx *gin.Context) {
+	r.GET("/hello", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"message": "Hello gin",
+			"code":    200,
+			"data":    "",
 		})
 	})
 
