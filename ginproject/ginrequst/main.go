@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -54,26 +55,37 @@ func handleResponseData(ctx *gin.Context, phone string, code string) {
 
 func postParamsJsonHandle(ctx *gin.Context) {
 
-	data, err := ctx.GetRawData()
-	if err != nil {
-		fmt.Println(err)
+	fmt.Println("----postParamsJsonHandle---")
+
+	bodyData, _ := ioutil.ReadAll(ctx.Request.Body)
+	fmt.Println("---body/--- \r\n " + string(bodyData))
+
+	fmt.Println("---header/--- \r\n")
+	for k, v := range ctx.Request.Header {
+		fmt.Println(k, v)
 	}
-	fmt.Println(string(data))
+
+	// data, err := ctx.GetRawData()
+	// if err != nil {
+	// 	fmt.Println("GetRawData err:", err)
+	// } else {
+	// 	fmt.Println(string(data))
+	// }
 
 	var body map[string]string
-	err = json.Unmarshal(data, &body)
+	err := json.Unmarshal(bodyData, &body)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("json error!", err)
+	} else {
+		fmt.Println("----json---", body)
 	}
 
+	// json := make(map[string]interface{}) //注意该结构接受的内容
+	// ctx.BindJSON(&json)
+	// fmt.Printf("%v\n", &json)
 	phone := body["phone"]
 	code := body["code"]
-	fmt.Printf("phone:%s,code:%s\n", phone, code)
-
-	json := make(map[string]interface{}) //注意该结构接受的内容
-	ctx.BindJSON(&json)
-	fmt.Printf("%v\n", &json)
 
 	handleResponseData(ctx, phone, code)
 }
