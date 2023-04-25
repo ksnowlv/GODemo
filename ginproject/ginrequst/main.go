@@ -15,13 +15,20 @@ func getRequest() {
 	fmt.Println("---getRequest--phone,code")
 	r := gin.Default()
 
-	r.GET("/login", func(ctx *gin.Context) {
+	r.GET("user/login", func(ctx *gin.Context) {
 		phone := ctx.Query("phone")
 		code := ctx.Query("code")
 		handleResponseData(ctx, phone, code)
 	})
 
-	r.POST("user/login", postParamsJsonHandle)
+	/*{
+		"phone": "133",
+		"code": "11"
+	} raw数据请求*/
+	r.POST("user/login_json", postParamsJsonHandle)
+
+	//
+	r.POST("user/login_form", postParamsFormHandle)
 
 	r.Run()
 }
@@ -56,21 +63,8 @@ func handleResponseData(ctx *gin.Context, phone string, code string) {
 func postParamsJsonHandle(ctx *gin.Context) {
 
 	fmt.Println("----postParamsJsonHandle---")
-
 	bodyData, _ := ioutil.ReadAll(ctx.Request.Body)
 	fmt.Println("---body/--- \r\n " + string(bodyData))
-
-	fmt.Println("---header/--- \r\n")
-	for k, v := range ctx.Request.Header {
-		fmt.Println(k, v)
-	}
-
-	// data, err := ctx.GetRawData()
-	// if err != nil {
-	// 	fmt.Println("GetRawData err:", err)
-	// } else {
-	// 	fmt.Println(string(data))
-	// }
 
 	var body map[string]string
 	err := json.Unmarshal(bodyData, &body)
@@ -80,30 +74,27 @@ func postParamsJsonHandle(ctx *gin.Context) {
 	} else {
 		fmt.Println("----json---", body)
 	}
-
-	// json := make(map[string]interface{}) //注意该结构接受的内容
-	// ctx.BindJSON(&json)
-	// fmt.Printf("%v\n", &json)
 	phone := body["phone"]
 	code := body["code"]
 
 	handleResponseData(ctx, phone, code)
 }
 
-func postRequest() {
-	//http://localhost:8080/user/login   phone=ksnow&code=1212
-	r := gin.Default()
+func postParamsFormHandle(ctx *gin.Context) {
 
-	r.POST("user/login", postParamsJsonHandle)
-	r.Run()
-}
+	fmt.Println("----postParamsFormHandle---")
+	// bodyData, _ := ioutil.ReadAll(ctx.Request.Body)
+	// fmt.Println("---body/--- \r\n " + string(bodyData))
+	// ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyData))
 
-func formRequest() {
+	// fmt.Println(ctx.Request.Form)
 
+	phone := ctx.PostForm("phone")
+	code := ctx.PostForm("code")
+
+	handleResponseData(ctx, phone, code)
 }
 
 func main() {
 	getRequest()
-	//postRequest()
-	formRequest()
 }
