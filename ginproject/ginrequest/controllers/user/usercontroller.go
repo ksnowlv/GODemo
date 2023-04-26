@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const XCOOKIE_USERID = "userid"
+
 type XUserController struct {
 }
 
@@ -39,7 +41,19 @@ func handleResponseData(ctx *gin.Context, phone string, code string) {
 	})
 }
 
+func (c XUserController) Index(ctx *gin.Context) {
+	ctx.SetCookie(XCOOKIE_USERID, "123456", 3600, "/", "localhost", false, true)
+
+	ctx.String(http.StatusOK, "cookie OK")
+}
+
+func (c XUserController) CookieTest(ctx *gin.Context) {
+	userid, _ := ctx.Cookie(XCOOKIE_USERID)
+	ctx.String(http.StatusOK, "cookie userid:"+userid)
+}
+
 func (c XUserController) UserLogin(ctx *gin.Context) {
+	ctx.SetCookie("userid", "123456", 3600, "/", "localhost", false, true)
 	phone := ctx.Query("phone")
 	code := ctx.Query("code")
 	handleResponseData(ctx, phone, code)
