@@ -1,4 +1,4 @@
-package routers
+package user
 
 import (
 	"encoding/json"
@@ -9,25 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutersInit(r *gin.Engine) {
-	userGroup := r.Group("/user")
-	{
-		userGroup.GET("/login", func(ctx *gin.Context) {
-			phone := ctx.Query("phone")
-			code := ctx.Query("code")
-			handleResponseData(ctx, phone, code)
-		})
-
-		/*{
-			"phone": "133",
-			"code": "11"
-		} raw数据请求*/
-		userGroup.POST("/login_json", postParamsJsonHandle)
-
-		//POST form表单提交
-		userGroup.POST("/login_form", postParamsFormHandle)
-
-	}
+type XUserController struct {
 }
 
 func handleResponseData(ctx *gin.Context, phone string, code string) {
@@ -57,7 +39,13 @@ func handleResponseData(ctx *gin.Context, phone string, code string) {
 	})
 }
 
-func postParamsJsonHandle(ctx *gin.Context) {
+func (c XUserController) UserLogin(ctx *gin.Context) {
+	phone := ctx.Query("phone")
+	code := ctx.Query("code")
+	handleResponseData(ctx, phone, code)
+}
+
+func (c XUserController) UserLoginWithJson(ctx *gin.Context) {
 
 	fmt.Println("----postParamsJsonHandle---")
 	bodyData, _ := ioutil.ReadAll(ctx.Request.Body)
@@ -77,7 +65,7 @@ func postParamsJsonHandle(ctx *gin.Context) {
 	handleResponseData(ctx, phone, code)
 }
 
-func postParamsFormHandle(ctx *gin.Context) {
+func (c XUserController) UserLoginWithForm(ctx *gin.Context) {
 
 	fmt.Println("----postParamsFormHandle---")
 	// bodyData, _ := ioutil.ReadAll(ctx.Request.Body)

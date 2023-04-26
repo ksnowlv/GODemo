@@ -1,4 +1,4 @@
-module ginrequst
+module ginrequest
 
 go 1.20
 
