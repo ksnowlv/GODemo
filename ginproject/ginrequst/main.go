@@ -9,26 +9,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// localhost:8080 -> 127.0.0.1:8080
+
 func getRequest() {
-	//http://localhost:8080/login?phone=ksnow&code=1212
+	//http://localhost:8080/user/login?phone=131&code=1212
 
 	fmt.Println("---getRequest--phone,code")
 	r := gin.Default()
 
-	r.GET("user/login", func(ctx *gin.Context) {
-		phone := ctx.Query("phone")
-		code := ctx.Query("code")
-		handleResponseData(ctx, phone, code)
-	})
+	userGroup := r.Group("/user")
+	{
+		userGroup.GET("/login", func(ctx *gin.Context) {
+			phone := ctx.Query("phone")
+			code := ctx.Query("code")
+			handleResponseData(ctx, phone, code)
+		})
 
-	/*{
-		"phone": "133",
-		"code": "11"
-	} raw数据请求*/
-	r.POST("user/login_json", postParamsJsonHandle)
+		/*{
+			"phone": "133",
+			"code": "11"
+		} raw数据请求*/
+		userGroup.POST("/login_json", postParamsJsonHandle)
 
-	//
-	r.POST("user/login_form", postParamsFormHandle)
+		//POST form表单提交
+		userGroup.POST("/login_form", postParamsFormHandle)
+
+	}
 
 	r.Run()
 }
