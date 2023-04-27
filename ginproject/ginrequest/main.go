@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
 
 	"github.com/gin-gonic/gin"
 
@@ -10,17 +12,21 @@ import (
 
 // localhost:8080 -> 127.0.0.1:8080
 
-func getRequest() {
-	//http://localhost:8080/user/login?phone=131&code=1212
+func main() {
 
-	fmt.Println("---getRequest--phone,code")
+	// 记录到文件。
+	log, err := os.Create("gin.log")
+
+	if err != nil {
+		fmt.Println("log file create fail:", err)
+		return
+	}
+
+	gin.DefaultWriter = io.MultiWriter(log)
+
 	r := gin.Default()
 	routers.UserRoutersInit(r)
 	routers.FileRoutersInit(r)
 
 	r.Run()
-}
-
-func main() {
-	getRequest()
 }
