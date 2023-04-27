@@ -7,6 +7,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"ginrequest/redisdb"
 )
 
 const XCOOKIE_USERID = "userid"
@@ -43,13 +45,16 @@ func handleResponseData(ctx *gin.Context, phone string, code string) {
 
 func (c XUserController) Index(ctx *gin.Context) {
 	ctx.SetCookie(XCOOKIE_USERID, "123456", 3600, "/", "localhost", false, true)
+	redisdb.RDB.Set("name", "ksnowlv", 0)
 
 	ctx.String(http.StatusOK, "cookie OK")
 }
 
 func (c XUserController) CookieTest(ctx *gin.Context) {
 	userid, _ := ctx.Cookie(XCOOKIE_USERID)
-	ctx.String(http.StatusOK, "cookie userid:"+userid)
+	name := redisdb.RDB.Get("name")
+
+	ctx.String(http.StatusOK, "cookie userid:"+userid+":name:", name)
 }
 
 func (c XUserController) UserLogin(ctx *gin.Context) {
