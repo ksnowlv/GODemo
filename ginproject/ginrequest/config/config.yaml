@@ -1,0 +1,8 @@
+app:
+    name: ksnowlv关于Gin框架学习实践
+    version: v1.0
+redis:
+    db: 0
+    host: localhost:6379
+    password: ""
+    poolsize: 100

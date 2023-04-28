@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	gin.ForceConsoleColor()
+	// gin.ForceConsoleColor()
 	config.InitConfig()
 	r := gin.Default()
 	//配置路由
