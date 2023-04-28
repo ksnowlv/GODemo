@@ -12,6 +12,7 @@ import (
 )
 
 const XCOOKIE_USERID = "userid"
+const XREDIS_KEY_NAME = "name"
 
 type XUserController struct {
 }
@@ -45,14 +46,14 @@ func handleResponseData(ctx *gin.Context, phone string, code string) {
 
 func (c XUserController) Index(ctx *gin.Context) {
 	ctx.SetCookie(XCOOKIE_USERID, "123456", 3600, "/", "localhost", false, true)
-	redisdb.RDB.Set("name", "ksnowlv", 0)
+	redisdb.RedisSetString(XREDIS_KEY_NAME, "ksnowlv", 10)
 
 	ctx.String(http.StatusOK, "cookie OK")
 }
 
 func (c XUserController) CookieTest(ctx *gin.Context) {
 	userid, _ := ctx.Cookie(XCOOKIE_USERID)
-	name := redisdb.RDB.Get("name")
+	name := redisdb.RedisGetString(XREDIS_KEY_NAME)
 
 	ctx.String(http.StatusOK, "cookie userid:"+userid+":name:", name)
 }
