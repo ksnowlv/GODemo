@@ -1,13 +1,19 @@
 
+# app配置
 app:
     name: ksnowlv关于Gin框架学习实践
     version: v1.0
     build: 101
-    # poolsize: 150
-    # host: localhost:6379
-    # password: 1
-    # db: 0
 
+# 日志配置
+log:
+  level: "debug" # 日志级别 这里设置 debug 级别
+  filename: "web_app.log"
+  maxsize: 500 # 日志最大容量
+  maxage: 30 # 备份存储最大时间
+  maxbackups: 10 # 备份最大数量
+
+# redis配置
 redis:
     host: localhost:6379
     password: 

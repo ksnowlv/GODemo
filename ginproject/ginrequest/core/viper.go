@@ -36,14 +36,15 @@ func InitViper() {
 }
 
 func updateConfigData(v *viper.Viper) {
-	err := v.Unmarshal(&global.GAppYamlConfig)
+	err := v.Unmarshal(&global.GAppConfig)
 
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		// fmt.Println("-----config%v\n", v)
-		fmt.Printf("App: %+v\n", global.GAppYamlConfig.App)
-		fmt.Printf("RedisConfig: %+v\n", global.GAppYamlConfig.RedisConfig)
+		fmt.Println("---config---%v\n", v)
+		fmt.Printf("App: %+v\n", global.GAppConfig.App)
+		fmt.Printf("log: %+v\n", global.GAppConfig.Logger)
+		fmt.Printf("Redis: %+v\n", global.GAppConfig.Redis)
 	}
 }
 

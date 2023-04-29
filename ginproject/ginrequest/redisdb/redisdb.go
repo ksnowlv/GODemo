@@ -13,12 +13,7 @@ import (
 // 初始化redis连接
 func InitRedisClient() (err error) {
 
-	rc := global.GAppYamlConfig.RedisConfig
-	// fmt.Printf("host:%s,password:%s,db:%d,poolsize:%d",
-	// 	rc.Host,
-	// 	rc.Password,
-	// 	rc.DB,
-	// 	rc.PoolSize)
+	rc := &global.GAppConfig.Redis
 	global.GRedis = redis.NewClient(&redis.Options{
 		Addr:     rc.Host,
 		Password: rc.Password, // no password set

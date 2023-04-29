@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 
 	"ginrequest/redisdb"
 )
@@ -49,6 +50,7 @@ func (c XUserController) Index(ctx *gin.Context) {
 	redisdb.RedisSetString(XREDIS_KEY_NAME, "ksnowlv", 10)
 
 	ctx.String(http.StatusOK, "cookie OK")
+	zap.L().Error("错误日志")
 }
 
 func (c XUserController) CookieTest(ctx *gin.Context) {
@@ -56,6 +58,7 @@ func (c XUserController) CookieTest(ctx *gin.Context) {
 	name := redisdb.RedisGetString(XREDIS_KEY_NAME)
 
 	ctx.String(http.StatusOK, "cookie userid:"+userid+":name:", name)
+	zap.L().Debug("测试日志")
 }
 
 func (c XUserController) UserLogin(ctx *gin.Context) {
