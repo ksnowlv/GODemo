@@ -50,7 +50,11 @@ func (c XUserController) Home(ctx *gin.Context) {
 	redisdb.RedisSetString(XREDIS_KEY_NAME, "ksnowlv", 3600*24)
 	redisdb.RedisSetMultiValues("username", "ksnow", "age", 10, "address", "北京海淀区")
 
-	ctx.String(http.StatusOK, "cookie OK")
+	// ctx.String(http.StatusOK, "cookie OK")
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "请求成功",
+	})
 	zap.L().Error("错误日志")
 }
 
@@ -68,6 +72,7 @@ func (c XUserController) UserLogin(ctx *gin.Context) {
 	ctx.SetCookie("userid", "123456", 3600, "/", "localhost", false, true)
 	phone := ctx.Query("phone")
 	code := ctx.Query("code")
+	fmt.Printf("---UserLogin:phone:%s,code=%s", phone, code)
 	handleResponseData(ctx, phone, code)
 }
 
