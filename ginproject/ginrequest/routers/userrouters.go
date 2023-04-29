@@ -9,9 +9,10 @@ import (
 func UserRoutersInit(r *gin.Engine) {
 	userGroup := r.Group("/user")
 	{
-
-		userGroup.GET("/home", user.XUserController{}.Index)
-		userGroup.GET("/cookie", user.XUserController{}.CookieTest)
+		//http://127.0.0.1:8080/user/login?phone=ksnow&code=1212
+		userGroup.GET("/home", user.XUserController{}.Home)
+		//
+		userGroup.GET("/cookie", user.XUserController{}.Cookie)
 
 		userGroup.GET("/login", user.XUserController{}.UserLogin)
 		/*{

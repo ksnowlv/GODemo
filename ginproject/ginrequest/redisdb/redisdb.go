@@ -48,3 +48,23 @@ func RedisGetString(key string) string {
 
 	return v
 }
+
+// MSet 批量设置key的值
+func RedisSetMultiValues(values ...interface{}) {
+	err := global.GRedis.MSet(context.Background(), values).Err()
+
+	if err != nil {
+		fmt.Printf("--- RedisSetMultiValues--%v", err)
+	}
+}
+
+// MGet 批量查询key的值
+func RedisGetMultiValues(k ...string) []interface{} {
+	res, err := global.GRedis.MGet(context.Background(), k...).Result()
+
+	if err != nil {
+		fmt.Printf("--- RedisGetMultiValues--%v", err)
+	}
+
+	return res
+}

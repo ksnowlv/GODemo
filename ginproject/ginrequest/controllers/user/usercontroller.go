@@ -45,18 +45,21 @@ func handleResponseData(ctx *gin.Context, phone string, code string) {
 	})
 }
 
-func (c XUserController) Index(ctx *gin.Context) {
+func (c XUserController) Home(ctx *gin.Context) {
 	ctx.SetCookie(XCOOKIE_USERID, "123456", 3600, "/", "localhost", false, true)
 	redisdb.RedisSetString(XREDIS_KEY_NAME, "ksnowlv", 3600*24)
+	redisdb.RedisSetMultiValues("username", "ksnow", "age", 10, "address", "北京海淀区")
 
 	ctx.String(http.StatusOK, "cookie OK")
 	zap.L().Error("错误日志")
 }
 
-func (c XUserController) CookieTest(ctx *gin.Context) {
+func (c XUserController) Cookie(ctx *gin.Context) {
 	userid, _ := ctx.Cookie(XCOOKIE_USERID)
 	name := redisdb.RedisGetString(XREDIS_KEY_NAME)
+	values := redisdb.RedisGetMultiValues("username", "age", "address")
 
+	fmt.Println("---redis多个values获取:", values)
 	ctx.String(http.StatusOK, "cookie userid:"+userid+":name:"+name)
 	zap.L().Debug("测试日志")
 }
