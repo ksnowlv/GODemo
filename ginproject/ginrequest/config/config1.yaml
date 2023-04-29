@@ -1,0 +1,9 @@
+app:
+   name: ksnowlv
+   version: 1.0
+
+redis:
+   host: localhost:8080
+   password: ""
+   db: 0
+   poolsize: 100   
