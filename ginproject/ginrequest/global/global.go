@@ -1,7 +1,9 @@
 package global
 
 import (
-	"github.com/go-redis/redis"
+	"time"
+
+	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 )
 
@@ -18,10 +20,11 @@ type XAPP struct {
 }
 
 type XRedis struct {
-	Host     string `mapstructure:"host"`
-	Password string `mapstructure:"password"`
-	DB       int    `mapstructure:"db"`
-	PoolSize int    `mapstructure:"poolsize"`
+	Host     string        `mapstructure:"host"`
+	Password string        `mapstructure:"password"`
+	DB       int           `mapstructure:"db"`
+	PoolSize int           `mapstructure:"poolsize"`
+	Timeout  time.Duration `mapstructure:"timeout"`
 }
 
 // log:

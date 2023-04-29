@@ -7,6 +7,7 @@ app:
 
 # 日志配置
 log:
+  mode: "dev"
   level: "debug" # 日志级别 这里设置 debug 级别
   filename: "web_app.log"
   maxsize: 500 # 日志最大容量
@@ -19,6 +20,7 @@ redis:
     password: 
     db: 0
     poolsize: 150
+    timeout: 5s
   
     
 

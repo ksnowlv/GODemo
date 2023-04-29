@@ -47,7 +47,7 @@ func handleResponseData(ctx *gin.Context, phone string, code string) {
 
 func (c XUserController) Index(ctx *gin.Context) {
 	ctx.SetCookie(XCOOKIE_USERID, "123456", 3600, "/", "localhost", false, true)
-	redisdb.RedisSetString(XREDIS_KEY_NAME, "ksnowlv", 10)
+	redisdb.RedisSetString(XREDIS_KEY_NAME, "ksnowlv", 3600*24)
 
 	ctx.String(http.StatusOK, "cookie OK")
 	zap.L().Error("错误日志")
@@ -57,7 +57,7 @@ func (c XUserController) CookieTest(ctx *gin.Context) {
 	userid, _ := ctx.Cookie(XCOOKIE_USERID)
 	name := redisdb.RedisGetString(XREDIS_KEY_NAME)
 
-	ctx.String(http.StatusOK, "cookie userid:"+userid+":name:", name)
+	ctx.String(http.StatusOK, "cookie userid:"+userid+":name:"+name)
 	zap.L().Debug("测试日志")
 }
 
