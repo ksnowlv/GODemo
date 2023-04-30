@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
+	"ginrequest/global"
+	"ginrequest/models/user"
 	"ginrequest/redisdb"
 )
 
@@ -109,4 +112,78 @@ func (c XUserController) UserLoginWithForm(ctx *gin.Context) {
 	code := ctx.PostForm("code")
 
 	handleResponseData(ctx, phone, code)
+}
+
+// 返回所有用户
+func (c XUserController) GetAllUser(ctx *gin.Context) {
+	user := user.XUser{}
+	users, err := user.GetAll(global.GMySQL)
+
+	if err != nil {
+		fmt.Println("---XUserController GetAllUser err:", err)
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": users,
+		"cout":   len(users),
+	})
+}
+
+// 返回指定id用户
+func (c XUserController) GetUserById(ctx *gin.Context) {
+
+	id := ctx.Param("id")
+
+	Id, err := strconv.Atoi(id)
+
+	if err != nil {
+		fmt.Println("---XUserController GetUserById err:", err)
+	}
+
+	user := user.XUser{Id: Id}
+
+	selectUser, err := user.Get(global.GMySQL)
+
+	var res gin.H
+	if err != nil {
+		res = gin.H{
+			"result": nil,
+			"count":  0,
+		}
+	} else {
+		res = gin.H{
+			"result": selectUser,
+			"count":  1,
+		}
+	}
+
+	ctx.JSON(http.StatusOK, res)
+}
+
+// 返回指定id用户
+func (c XUserController) UserAdd(ctx *gin.Context) {
+
+	var user user.XUser
+
+	err := ctx.Bind(&user)
+
+	if err != nil {
+		fmt.Println("---XUserController UserAdd err:", err)
+	}
+
+	Id, err := user.Add(global.GMySQL)
+
+	if err != nil {
+		fmt.Println("---XUserController Add err:", err)
+	}
+
+	fmt.Println(Id)
+
+	age := strconv.Itoa(user.Age)
+	info := "name:" + user.Name + "age:" + age + "phone:" + user.Phone
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "请求成功",
+		"data":    info,
+	})
 }

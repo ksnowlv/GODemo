@@ -1,9 +1,9 @@
 
 # app配置
 app:
-    name: ksnowlv关于Gin框架学习实践
-    version: v1.0
-    build: 101
+  name: ksnowlv关于Gin框架学习实践
+  version: v1.0
+  build: 101
 
 # 日志配置
 log:
@@ -16,11 +16,20 @@ log:
 
 # redis配置
 redis:
-    host: localhost:6379
-    password: 
-    db: 0
-    poolsize: 150
-    timeout: 5s
+  host: localhost:6379
+  password: 
+  db: 0
+  poolsize: 150
+  timeout: 5s
+
+#mysql配置 用户名：密码@tcp(地址:端口)/数据库名 #127.0.0.1
+mysql:
+  user: root
+  password: gc2053GCO
+  host: localhost
+  port: 3306
+  dbname: ksnow_web_app
+
   
     
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"ginrequest/core"
+	"ginrequest/database"
 	"ginrequest/redisdb"
 )
 
@@ -26,6 +27,7 @@ func InitConfig() {
 	fmt.Println("---InitConfig---")
 
 	core.InitViper()
+	database.InitMySQL()
 	err := redisdb.InitRedisClient()
 
 	if err != nil {

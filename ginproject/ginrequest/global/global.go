@@ -1,6 +1,7 @@
 package global
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -11,6 +12,7 @@ type XAppConfig struct {
 	App    XAPP    `mapstructure:"app"`
 	Logger XLogger `mapstructure:"log"`
 	Redis  XRedis  `mapstructure:"redis"`
+	MySQL  XMySQL  `mapstructure:"mysql"`
 }
 
 type XAPP struct {
@@ -25,6 +27,14 @@ type XRedis struct {
 	DB       int           `mapstructure:"db"`
 	PoolSize int           `mapstructure:"poolsize"`
 	Timeout  time.Duration `mapstructure:"timeout"`
+}
+
+type XMySQL struct {
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	DBName   string `mapstructure:"dbname"`
 }
 
 // log:
@@ -47,4 +57,5 @@ var (
 	GRedis     *redis.Client
 	GViper     *viper.Viper
 	GAppConfig *XAppConfig
+	GMySQL     *sql.DB
 )

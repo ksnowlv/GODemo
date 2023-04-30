@@ -51,6 +51,32 @@ func UserRoutersInit(r *gin.Engine) {
 		/*
 			curl --data "phone=152&code=152" "http://localhost:8080/user/login_form"
 		*/
-		userGroup.POST("/login_form", user.XUserController{}.UserLoginWithForm)
+
+		/* -d/data HTTP POST方式传送数据   -D/–dump-header 把header信息写入到该文件中
+				 curl -X POST http://localhost:8080/user/add \
+		 		  -d '{"name": "ksnowlv", "age": 30,"Phone": "152"}' \
+				  -H 'Content-Type: application/json' \
+				  -H 'Accept-Encoding: gzip, deflate, br' \
+				  -H 'Connection: keep-alive' \
+				  -H 'User-Agent: ksnowlv关于Gin框架学习实践'
+
+				  curl -X POST http://localhost:8080/user/add \
+		 		  -d '{"name": "kair", "age": 31,"Phone": "151"}' \
+				  -H 'Content-Type: application/json' \
+				  -H 'Accept-Encoding: gzip, deflate, br' \
+				  -H 'Connection: keep-alive' \
+				  -H 'User-Agent: ksnowlv关于Gin框架学习实践'
+		*/
+		userGroup.POST("/add", user.XUserController{}.UserAdd)
+
+		/* -d/data HTTP POST方式传送数据   -D/–dump-header 把header信息写入到该文件中
+				 curl -X POST http://localhost:8080/user/getalluser \
+		 		  -d '{"token": "123"}' \
+				  -H 'Content-Type: application/json' \
+				  -H 'Accept-Encoding: gzip, deflate, br' \
+				  -H 'Connection: keep-alive' \
+				  -H 'User-Agent: ksnowlv关于Gin框架学习实践'
+		*/
+		userGroup.POST("/getalluser", user.XUserController{}.GetAllUser)
 	}
 }

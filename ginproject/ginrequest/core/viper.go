@@ -20,7 +20,7 @@ func InitViper() {
 	// 读配置文件
 	err := viperConfig.ReadInConfig()
 	if err != nil {
-		fmt.Errorf("发生错误：%s \n", err)
+		fmt.Printf("发生错误：%s \n", err)
 	}
 
 	// 监听配置文件的变化
@@ -41,9 +41,10 @@ func updateConfigData(v *viper.Viper) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println("---config---%v\n", v)
+		fmt.Printf("---config---%v\n", v)
 		fmt.Printf("App: %+v\n", global.GAppConfig.App)
 		fmt.Printf("log: %+v\n", global.GAppConfig.Logger)
+		fmt.Printf("mysql: %+v\n", global.GAppConfig.MySQL)
 		fmt.Printf("Redis: %+v\n", global.GAppConfig.Redis)
 	}
 }
