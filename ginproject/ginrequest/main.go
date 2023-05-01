@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"ginrequest/config"
 	"ginrequest/logger"
 	"ginrequest/routers"
+
+	"github.com/gin-contrib/gzip"
+	"github.com/gin-gonic/gin"
 )
 
 // localhost:8080 -> 127.0.0.1:8080
@@ -24,6 +25,9 @@ func main() {
 	r := gin.Default()
 
 	r.Use(logger.GinLogger, logger.GinRecovery(true))
+	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	// r.Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedPaths([]string{"/file/"})))
+
 	//配置路由
 	routers.UserRoutersInit(r)
 	routers.FileRoutersInit(r)
