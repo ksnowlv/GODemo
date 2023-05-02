@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 
 	"ginrequest/global"
@@ -71,13 +72,13 @@ func (c XUserController) Cookie(ctx *gin.Context) {
 	zap.L().Debug("测试日志")
 }
 
-func (c XUserController) UserLogin(ctx *gin.Context) {
-	ctx.SetCookie("userid", "123456", 3600, "/", "localhost", false, true)
-	phone := ctx.Query("phone")
-	code := ctx.Query("code")
-	fmt.Printf("---UserLogin:phone:%s,code=%s", phone, code)
-	handleResponseData(ctx, phone, code)
-}
+// func (c XUserController) UserLogin(ctx *gin.Context) {
+// 	ctx.SetCookie("userid", "123456", 3600, "/", "localhost", false, true)
+// 	phone := ctx.Query("phone")
+// 	code := ctx.Query("code")
+// 	fmt.Printf("---UserLogin:phone:%s,code=%s", phone, code)
+// 	handleResponseData(ctx, phone, code)
+// }
 
 func (c XUserController) UserLoginWithJson(ctx *gin.Context) {
 
@@ -124,35 +125,37 @@ func (c XUserController) GetAllUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"result": users,
-		"cout":   len(users),
+		"count":  len(users),
 	})
 }
 
 // 返回指定id用户
 func (c XUserController) GetUserById(ctx *gin.Context) {
 
-	id := ctx.Param("id")
+	var user user.XUser
 
-	Id, err := strconv.Atoi(id)
+	err := ctx.Bind(&user)
 
-	if err != nil {
-		fmt.Println("---XUserController GetUserById err:", err)
+	if len(user.UserId) == 0 {
+		fmt.Println("---XUserController GetUserById no userid")
 	}
 
-	user := user.XUser{Id: Id}
-
-	selectUser, err := user.Get(global.GMySQL)
+	selectUser, err := user.GetUserById(global.GMySQL)
 
 	var res gin.H
 	if err != nil {
 		res = gin.H{
-			"result": nil,
-			"count":  0,
+			"code":    http.StatusOK,
+			"message": "请求成功",
+			"result":  "没有查询到该用户",
+			"count":   0,
 		}
 	} else {
 		res = gin.H{
-			"result": selectUser,
-			"count":  1,
+			"code":    http.StatusOK,
+			"message": "请求成功",
+			"result":  selectUser,
+			"count":   1,
 		}
 	}
 
@@ -160,30 +163,161 @@ func (c XUserController) GetUserById(ctx *gin.Context) {
 }
 
 // 返回指定id用户
-func (c XUserController) UserAdd(ctx *gin.Context) {
+func (c XUserController) UserRegist(ctx *gin.Context) {
 
 	var user user.XUser
 
 	err := ctx.Bind(&user)
 
 	if err != nil {
-		fmt.Println("---XUserController UserAdd err:", err)
+		fmt.Println("---XUserController UserRegist Bind err:", err)
+	} else {
+		fmt.Printf("---XUserController UserRegist user:%v", user)
 	}
 
-	Id, err := user.Add(global.GMySQL)
+	_, err = user.GetUserByPhone(global.GMySQL)
+
+	fmt.Printf("---XUserController UserRegist resUser:%v, err:%v", user, err)
 
 	if err != nil {
-		fmt.Println("---XUserController Add err:", err)
+
+		// V4 基于随机数
+		u4 := uuid.New()
+		fmt.Println(u4.String()) // a0d99f20-1dd1-459b-b516-dfeca4005203
+		user.UserId = u4.String()
+
+		insertId, err := user.AddNewUser(global.GMySQL)
+
+		if err != nil {
+			fmt.Println("---XUserController UserRegist AddNewUser err:", err)
+		} else {
+			fmt.Println("---XUserController UserRegist  AddNewUser suceess!,insertId:", insertId)
+
+		}
+		age := strconv.Itoa(user.Age)
+		info := "userid:" + user.UserId + "-name:" + user.Name + "-age:" + age + "-phone:" + user.Phone
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    http.StatusOK,
+			"message": "恭喜您，账号已注册成功，请登陆!",
+			"data":    info,
+		})
+
+	} else {
+		_, err := user.Update(global.GMySQL)
+
+		if err != nil {
+			fmt.Println("---XUserController update err:", err)
+		}
+
+		age := strconv.Itoa(user.Age)
+		info := "userid:" + user.UserId + "\nname:" + user.Name + "\nage:" + age + "\nphone:" + user.Phone
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    http.StatusOK,
+			"message": "已注册过账号，请登陆",
+			"data":    info,
+		})
+	}
+}
+
+func (c XUserController) UserLogin(ctx *gin.Context) {
+	var user user.XUser
+
+	err := ctx.Bind(&user)
+
+	if err != nil {
+		fmt.Println("---XUserController Bind user err:", err)
+	} else {
+		fmt.Printf("---user:%v", user)
 	}
 
-	fmt.Println(Id)
+	_, err = user.GetUserByPhone(global.GMySQL)
 
-	age := strconv.Itoa(user.Age)
-	info := "name:" + user.Name + "age:" + age + "phone:" + user.Phone
+	if err != nil {
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"code":    http.StatusOK,
-		"message": "请求成功",
-		"data":    info,
-	})
+		fmt.Println("---XUserController UserLogin：查询不到该用户，开始准备创建用户--- err:", err)
+		// V4 基于随机数
+		u4 := uuid.New()
+		fmt.Println(u4.String()) // a0d99f20-1dd1-459b-b516-dfeca4005203
+		user.UserId = u4.String()
+		insertId, err := user.AddNewUser(global.GMySQL)
+
+		if err != nil {
+			fmt.Println("---XUserController Add err:", err)
+		} else {
+			fmt.Println("---XUserController Add  suceess!,insertId:", insertId)
+
+		}
+		age := strconv.Itoa(user.Age)
+		info := "userid:" + user.UserId + "\nname:" + user.Name + "\nage:" + age + "\nphone:" + user.Phone
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    http.StatusOK,
+			"message": "创建用户成功",
+			"data":    info,
+		})
+
+	} else {
+
+		age := strconv.Itoa(user.Age)
+		info := "userid:" + user.UserId + "-name:" + user.Name + "-age:" + age + "-phone:" + user.Phone
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    http.StatusOK,
+			"message": "用户登陆成功!",
+			"data":    info,
+		})
+	}
 }
+
+// // 返回指定id用户
+// func (c XUserController) UserAdd(ctx *gin.Context) {
+
+// 	var user user.XUser
+
+// 	err := ctx.Bind(&user)
+
+// 	if err != nil {
+// 		fmt.Println("---XUserController UserAdd err:", err)
+// 	} else {
+// 		fmt.Printf("---user:%v", user)
+// 	}
+
+// 	_, err = user.Get(global.GMySQL)
+
+// 	fmt.Printf("---resUser:%v, err:%v", user, err)
+
+// 	if err != nil {
+// 		fmt.Println("---UserAdd--- err:", err)
+// 		Id, err := user.Add(global.GMySQL)
+
+// 		if err != nil {
+// 			fmt.Println("---XUserController Add err:", err)
+// 		}
+
+// 		fmt.Println(Id)
+
+// 		age := strconv.Itoa(user.Age)
+// 		info := "name:" + user.Name + "age:" + age + "phone:" + user.Phone
+
+// 		ctx.JSON(http.StatusOK, gin.H{
+// 			"code":    http.StatusOK,
+// 			"message": "添加成功",
+// 			"data":    info,
+// 		})
+
+// 	} else {
+// 		_, err := user.Update(global.GMySQL)
+
+// 		if err != nil {
+// 			fmt.Println("---XUserController update err:", err)
+// 		}
+
+// 		ctx.JSON(http.StatusOK, gin.H{
+// 			"code":    http.StatusOK,
+// 			"message": "更新成功",
+// 		})
+// 	}
+
+// }
