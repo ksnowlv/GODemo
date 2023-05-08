@@ -5,7 +5,6 @@ import (
 	"ginrequest/logger"
 	"ginrequest/routers"
 
-	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,13 +22,14 @@ func main() {
 	logger.InitLog()
 
 	r := gin.Default()
-
-	r.Use(logger.GinLogger, logger.GinRecovery(true))
-	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	r.LoadHTMLGlob("templates/*")
+	// r.Use(logger.GinLogger, logger.GinRecovery(true))
+	// r.Use(gzip.Gzip(gzip.DefaultCompression))
 	// r.Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedPaths([]string{"/file/"})))
 
 	//配置路由
 	routers.UserRoutersInit(r)
 	routers.FileRoutersInit(r)
+	routers.NewsRoutersInit(r)
 	r.Run()
 }
