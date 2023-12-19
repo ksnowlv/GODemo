@@ -25,6 +25,10 @@ func main() {
 	r.LoadHTMLGlob("templates/*")
 	// r.Use(logger.GinLogger, logger.GinRecovery(true))
 	// r.Use(gzip.Gzip(gzip.DefaultCompression))
+
+	r.Use(logger.GinLogger, logger.GinRecovery(true))
+	//r.Use(gzip.Gzip(gzip.DefaultCompression))
+
 	// r.Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedPaths([]string{"/file/"})))
 
 	//配置路由

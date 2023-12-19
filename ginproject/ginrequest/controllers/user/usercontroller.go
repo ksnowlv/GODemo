@@ -204,14 +204,14 @@ func (c XUserController) UserRegist(ctx *gin.Context) {
 		})
 
 	} else {
-		_, err := user.Update(global.GMySQL)
+		resUser, err := user.GetUserByPhone(global.GMySQL)
 
 		if err != nil {
 			fmt.Println("---XUserController update err:", err)
 		}
 
-		age := strconv.Itoa(user.Age)
-		info := "userid:" + user.UserId + "\nname:" + user.Name + "\nage:" + age + "\nphone:" + user.Phone
+		age := strconv.Itoa(resUser.Age)
+		info := "userid:" + resUser.UserId + "\nname:" + resUser.Name + "\nage:" + age + "\nphone:" + resUser.Phone
 
 		ctx.JSON(http.StatusOK, gin.H{
 			"code":    http.StatusOK,

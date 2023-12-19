@@ -78,7 +78,7 @@ func (user *XUser) AddNewUser(db *sql.DB) (Id int, err error) {
 }
 
 func (user *XUser) Update(db *sql.DB) (rows int, err error) {
-	// stmt, err := db.Prepare("update user set name=?,age=?,phone=? where id=?")
+	// stmt, err := db.Prepare("update user set name=‘?’,age=?,phone=? where id=?")
 	// if err != nil {
 	// 	log.Fatalln(err)
 	// }
@@ -102,6 +102,34 @@ func (user *XUser) Update(db *sql.DB) (rows int, err error) {
 	fmt.Printf("---XUser---Update:%d\n", rows)
 
 	// defer stmt.Close()
+	return rows, err
+}
+
+func (user *XUser) UpdateUser(db *sql.DB) (rows int, err error) {
+	stmt, err := db.Prepare("update user set name=?,age=?,phone=? where userid=?")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	sql := fmt.Sprintf("UPDATE user set name='%s', age='%d', phone='%s' where userid='%s';",
+		user.Name,
+		user.Age,
+		user.Phone,
+		user.UserId)
+	rs, err := db.Exec(sql)
+
+	fmt.Sprintln(sql)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+	row, err := rs.RowsAffected()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	rows = int(row)
+	fmt.Printf("---XUser---Update:%d\n", rows)
+
+	defer stmt.Close()
 	return rows, err
 }
 
